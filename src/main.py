@@ -1,15 +1,16 @@
-from memory_management.service import MemoryManagementService
+import logging
+
+from mcp_config.mcp_server import mcp_server
+import mcp_config.tools
 
 
 def main():
-    memory = MemoryManagementService()
-
-    memory.save_memory('testing is using Pytest')
-    memory.save_memory('This project is using python')
-    memory.save_memory('I know Tyepscript')
-
-    result = memory.get_memory('testing')
-    print(f'Result: {result}')
+    logger = logging.Logger(mcp_server.name)
+    
+    mcp_server.run(transport='stdio')
+    logger.log(
+        msg="MCP server initialized"
+    )
 
 
 if __name__ == "__main__":
