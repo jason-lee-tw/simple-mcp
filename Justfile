@@ -5,20 +5,27 @@ help:
 [group('Initialize')]
 init:
   @cd mcp-server && \
-    uv venv
+    uv venv --clear
+  @cd chat-bot && \
+    uv venv --clear
 
-[group('Run MCP Server')]
+[group('MCP-Server: Run App')]
 up-mcp:
   @cd mcp-server && \
     uv run src/main.py
 
 
-[group('Run MCP Server')]
+[group('MCP-Server: Run App')]
 up-mcp-with-inspector:
   @cd mcp-server && \
     pnpx @modelcontextprotocol/inspector uv run src/main.py
 
-[group('Test')]
+[group('Chat-Bot: Run App')]
+up-chatbot:
+  @cd chat-bot && \
+    uv run src/main.py
+
+[group('MCP-Server: Test')]
 test-mcp-unit:
   @cd mcp-server && \
     uv run pytest src/
@@ -26,4 +33,13 @@ test-mcp-unit:
 [group('Clean')]
 clean-python:
   @rm -rf **/.venv
-  @echo "\`.venv\` folder is deleted."
+  @echo "'.venv' folders are deleted."
+
+[group('Clean')]
+clean-temp:
+  @rm -rf **/temp
+  @echo "'temp' folders are deleted."
+
+[group('Clean')]
+clean:
+  @just clean-python clean-temp
