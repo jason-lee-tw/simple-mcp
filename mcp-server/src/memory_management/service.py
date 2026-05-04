@@ -1,4 +1,5 @@
 import dataclasses
+from typing import List, Tuple
 import uuid
 from datetime import datetime
 from os import path
@@ -29,10 +30,16 @@ class MemoryManagementService:
         )
 
     def get_memory(self, query: str, limit: int = 3) -> list[MemoryEntry]:
-        results = []
-        for entry in self.__memory_list:
-            if query.lower() in entry.content.lower():
-                results.append(entry)
-                if len(results) >= limit:
-                    break
-        return results
+        memory_score_list: List[Tuple[MemoryEntry, int]] = []
+
+        for memory in self.__memory_list:            
+            memory_content = memory.content.lower()
+            score = sum(1 for keyword in query.split() if keyword in memory_content)
+            if score > 0:
+                memory_score_list.append((memory, score))
+
+        memory_score_list.sort(key=lambda x: x[1], reverse=True)
+
+        print(f'query: {query}\nmemory_score_list: {memory_score_list}')
+
+        return [score_item[0] for score_item in memory_score_list[:limit]]

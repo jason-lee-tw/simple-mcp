@@ -13,7 +13,8 @@ class ChatRequest:
 @router.post("/")
 def chat(body: ChatRequest):
     model = ClaudeAgent()
-    result = model.chat(body.message)
+    # result = model.chat(body.message)
+    result = model.chat_with_mcp(body.message)
 
     return {
         "response": result

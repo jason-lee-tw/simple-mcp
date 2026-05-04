@@ -3,7 +3,7 @@ from mcp_config.mcp_server import mcp_server
 from memory_management.service import MemoryManagementService
 
 @mcp_server.tool()
-def add_memory(content: str) -> None:
+def add_memory(content: str) -> str:
   """
     Save content into memory.
     
@@ -15,6 +15,7 @@ def add_memory(content: str) -> None:
     """
   memory = MemoryManagementService()
   memory.save_memory(content)
+  return f'Content is saved into memory:\n{content}'
 
 
 @mcp_server.tool()

@@ -9,6 +9,7 @@ def main():
     
     mcp_server.run(transport='stdio')
     logger.log(
+        level=30,
         msg="MCP server initialized"
     )
 

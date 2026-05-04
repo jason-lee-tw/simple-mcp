@@ -46,14 +46,17 @@ class TestGetMemory:
             MemoryEntry(id="1", content="hello world", timestamp="t"),
             MemoryEntry(id="2", content="goodbye world", timestamp="t"),
             MemoryEntry(id="3", content="hello again", timestamp="t"),
+            MemoryEntry(id="4", content="The user prefers Python over JavaScript", timestamp="t"),
+            MemoryEntry(id="5", content="The user's favourite programming language is Python.", timestamp="t"),
+            MemoryEntry(id="6", content="The user love laksa", timestamp="t"),
         ]
         service = self._make_service(entries)
 
-        result = service.get_memory("hello")
+        result = service.get_memory("prefers which programming language")
 
         assert len(result) == 2
-        assert result[0].id == "1"
-        assert result[1].id == "3"
+        assert result[0].id == "5"
+        assert result[1].id == "4"
 
     def test_returns_empty_list_on_no_match(self):
         entries = [MemoryEntry(id="1", content="hello world", timestamp="t")]
