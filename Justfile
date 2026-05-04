@@ -9,6 +9,10 @@ init:
   @cd chat-bot && \
     uv venv --clear
 
+[group('Docker Run App')]
+up:
+  @docker compose -f docker-compose.yml up --build
+
 [group('MCP-Server: Run App')]
 up-mcp:
   @cd mcp-server && \

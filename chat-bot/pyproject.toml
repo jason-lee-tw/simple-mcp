@@ -5,10 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "arize-phoenix-otel>=0.6.0",
+    "arize-phoenix[evals]>=4.0.0",
     "fastapi>=0.136.1",
     "langchain>=1.2.16",
     "langchain-anthropic>=1.4.2",
     "nest-asyncio>=1.6.0",
+    "openinference-instrumentation-langchain>=0.1.0",
     "python-dotenv>=1.2.2",
     "uvicorn>=0.34.0",
 ]
