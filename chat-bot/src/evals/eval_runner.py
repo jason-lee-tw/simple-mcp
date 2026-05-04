@@ -1,7 +1,10 @@
 import os
 import sys
 
+from dotenv import load_dotenv
 from phoenix.client import Client
+
+load_dotenv()
 from phoenix.evals import LLM, LLMEvaluator, evaluate_dataframe
 
 HALLUCINATION_PROMPT = (
