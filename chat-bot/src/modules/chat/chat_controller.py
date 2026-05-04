@@ -1,8 +1,20 @@
+from dataclasses import dataclass
 from fastapi import APIRouter
+from agents.base_agent.claude_agent import ClaudeAgent
 
 router = APIRouter(prefix="/chat")
 
 
+@dataclass
+class ChatRequest:
+    message: str
+
+
 @router.post("/")
-def chat():
-    return {}
+def chat(body: ChatRequest):
+    model = ClaudeAgent()
+    result = model.chat(body.message)
+
+    return {
+        "response": result
+    }
