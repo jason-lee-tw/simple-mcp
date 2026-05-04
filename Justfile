@@ -30,6 +30,11 @@ test-mcp-unit:
   @cd mcp-server && \
     uv run pytest src/
 
+[group('Chat-Bot: Test')]
+test-chatbot-unit:
+  @cd chat-bot && \
+    uv run pytest src/
+
 [group('Clean')]
 clean-python:
   @rm -rf **/.venv
