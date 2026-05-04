@@ -1,5 +1,9 @@
+from typing import List
+
 from langchain.chat_models import BaseChatModel
 from langchain.agents import create_agent
+
+from agents.base_agent.chat_message import ChatMessage
 
 
 class BaseAgent:
@@ -11,15 +15,9 @@ class BaseAgent:
     self.__model = model
 
   def chat(self, user_message: str) -> str:
-    messages = [
-      {
-        'role': 'system',
-        'content': self.__system_prompt
-      },
-      {
-        'role': 'user',
-        'content': user_message
-      }
+    messages: List[ChatMessage] = [
+      ChatMessage(role='system', content=self.__system_prompt),
+      ChatMessage(role='user', content=user_message),
     ]
 
     agent = create_agent(self.__model)
