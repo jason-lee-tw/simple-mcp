@@ -33,3 +33,23 @@ class BaseAgent:
     except Exception as error:
       error_message = f"Error: Agent API request failed:\n{str(error)}"
       return error_message
+  
+  def chat_with_mcp(self, user_message: str) -> str:
+    messages: List[ChatMessage] = [
+      ChatMessage(role='system', content=self.__system_prompt),
+      ChatMessage(role='user', content=user_message),
+    ]
+
+    agent = create_agent(self.__model)
+
+    try:
+      response = agent.invoke({
+        'messages': messages
+      })
+
+      result = response['messages'][-1].content
+
+      return result
+    except Exception as error:
+      error_message = f"Error: Agent API request failed:\n{str(error)}"
+      return error_message
