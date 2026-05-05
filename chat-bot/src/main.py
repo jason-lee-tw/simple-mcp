@@ -1,15 +1,13 @@
 import uvicorn
 import dotenv
-
-from server_config.server import start_app
-from server_config.tracer import register_phoenix_tracer
+import os
 
 
 def main():
     dotenv.load_dotenv()
-    register_phoenix_tracer()
-    app = start_app()
-    uvicorn.run(app, host='localhost', port=3001)
+    port = int(os.getenv('PORT', '3001'))
+    reload = os.getenv('RELOAD', 'false').lower() == 'true'
+    uvicorn.run('server_config.server:start_app', factory=True, host='0.0.0.0', port=port, reload=reload)
 
 
 if __name__ == '__main__':

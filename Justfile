@@ -13,7 +13,7 @@ init:
 # Run application with docker compose
 [group('Docker Run App')]
 up:
-  @docker compose -f docker-compose.yml up --build
+  @docker compose -f docker-compose.yml up --build -w
 
 [group('MCP-Server: Run App')]
 up-mcp:

@@ -9,5 +9,24 @@ services:
     environment:
       - PHOENIX_WORKING_DIR=/phoenix
 
+  chatbot:
+    build:
+      context: .
+      dockerfile: docker/local/chatbot/Dockerfile
+    ports:
+      - "3001:3001"
+    env_file:
+      - chat-bot/.env
+    environment:
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:4317
+      - PHOENIX_BASE_URL=http://phoenix:6006
+    depends_on:
+      - phoenix
+    develop:
+      watch:
+        - action: sync
+          path: ./chat-bot/src
+          target: /app/src
+
 volumes:
   phoenix_data:
