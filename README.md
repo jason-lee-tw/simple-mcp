@@ -16,25 +16,30 @@ just init
 
 ## Running the App
 
-### Full stack (recommended)
+### Prerequisites
 
-Starts Phoenix
+- Create `.env` in `./chatbot/` folder by following `./chatbot/.env.template`.
+
+### Running application with docker (recommended)
+
+Step 1 - Run the application
 
 ```bash
 just up
 ```
 
-### Individual services
+Step 2 - Visit Services
+
+- Visit chatbot Swagger page at `http://localhost:3001/docs`. Note that the port is listed in the `.env`.
+  - You can use the endpoint `POST /chat` to send request to chatbot.
+- Visit Pheonix dashboard at `http://localhost:6006`.
+
+### Running MCP server with inspector UI
+
+To inspect the MCP server only, you can use MCP inspector to run the MCP server.
 
 ```bash
-just up-mcp        # MCP server only
-just up-chatbot    # Chat-bot only
-```
-
-### MCP server with inspector UI
-
-```bash
-just up-mcp-with-inspector
+just up-mcp
 ```
 
 ## Testing
@@ -49,15 +54,24 @@ just test-chatbot-unit   # Chat-bot unit tests
 Requires Phoenix to be running (`just up`). Fetches traces and runs hallucination and relevance evaluations, writing results back to Phoenix as annotations.
 
 ```bash
-cd chat-bot && uv run python src/evals/eval_runner.py
+just test-llm-output
 ```
 
 View results at [http://localhost:6006](http://localhost:6006).
 
-## Cleanup
+## Clean Up
 
 ```bash
-just clean        # Remove .venv and temp folders
+just clean        # Clean all resources
 just clean-python # Remove .venv folders only
 just clean-temp   # Remove temp folders only
+just down-clean   # Stop & delete all docker containers from this project and clean up the docker volumes
+```
+
+## Other useful commands
+
+### List all Just available commands
+
+```sh
+just help
 ```

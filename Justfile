@@ -10,7 +10,7 @@ init:
   @cd chat-bot && \
     uv sync
 
-# Run applications with docker compose
+# Run full application with docker compose
 [group('Run App')]
 up:
   @docker compose -f docker-compose.yml up --build -w
@@ -38,6 +38,12 @@ test-mcp-unit:
 test-chatbot-unit:
   @cd chat-bot && \
     uv run pytest src/
+
+# Start a runner to evaluate the LLM past outputs in Pheonix
+[group('Test')]
+test-llm-output:
+  @cd chat-bot && \
+    uv run src/evals/eval_runner.py
 
 [group('Clean')]
 clean-python:
