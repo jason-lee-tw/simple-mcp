@@ -11,8 +11,10 @@ def test_register_uses_default_endpoint_when_env_not_set():
          patch.dict(os.environ, env, clear=True):
         register_phoenix_tracer()
         mock_register.assert_called_once_with(
-            collector_endpoint='http://localhost:4317',
+            endpoint='http://localhost:4317',
             project_name='chat-bot',
+            protocol='grpc',
+            batch=True,
         )
 
 
@@ -23,8 +25,10 @@ def test_register_uses_custom_endpoint_from_env():
          patch.dict(os.environ, {'PHOENIX_COLLECTOR_ENDPOINT': custom}):
         register_phoenix_tracer()
         mock_register.assert_called_once_with(
-            collector_endpoint=custom,
+            endpoint=custom,
             project_name='chat-bot',
+            protocol='grpc',
+            batch=True,
         )
 
 
