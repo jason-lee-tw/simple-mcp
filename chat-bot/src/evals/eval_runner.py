@@ -5,13 +5,14 @@ from dotenv import load_dotenv
 from phoenix.client import Client
 
 load_dotenv()
-from phoenix.evals import LLM, LLMEvaluator, evaluate_dataframe
+from phoenix.evals import LLM, ClassificationEvaluator, evaluate_dataframe
+from phoenix.evals.utils import to_annotation_dataframe
 
 HALLUCINATION_PROMPT = (
-    "Given the following question, context, and answer, determine whether the answer "
-    "contains hallucinations (information not supported by the context).\n\n"
-    "Question: {input}\nContext: {reference}\nAnswer: {output}\n\n"
-    "Respond with 'hallucinated' if the answer contains unsupported information, "
+    "Given the following question and answer, determine whether the answer "
+    "contains hallucinations (fabricated information presented as fact).\n\n"
+    "Question: {input}\nAnswer: {output}\n\n"
+    "Respond with 'hallucinated' if the answer contains fabricated information, "
     "or 'not hallucinated' otherwise."
 )
 
@@ -50,29 +51,38 @@ def main():
         sync_client_kwargs={'api_key': api_key},
     )
 
-    # LLMEvaluator measures whether the response correctly answers the user's question.
-    hallucination_evaluator = LLMEvaluator(
+    hallucination_evaluator = ClassificationEvaluator(
         name='Hallucination',
         llm=model,
         prompt_template=HALLUCINATION_PROMPT,
+        choices={'hallucinated': 0.0, 'not hallucinated': 1.0},
     )
-    qa_evaluator = LLMEvaluator(
+    qa_evaluator = ClassificationEvaluator(
         name='QA Correctness',
         llm=model,
         prompt_template=QA_PROMPT,
+        choices={'correct': 1.0, 'incorrect': 0.0},
     )
 
+    eval_df = spans_df.rename(columns={
+        'attributes.input.value': 'input',
+        'attributes.output.value': 'output',
+    })
+
     hallucination_evals = evaluate_dataframe(
-        dataframe=spans_df,
+        dataframe=eval_df,
         evaluators=[hallucination_evaluator],
     )
     qa_evals = evaluate_dataframe(
-        dataframe=spans_df,
+        dataframe=eval_df,
         evaluators=[qa_evaluator],
     )
 
-    client.spans.log_span_annotations_dataframe(dataframe=hallucination_evals, annotation_name='Hallucination', annotator_kind='LLM')
-    client.spans.log_span_annotations_dataframe(dataframe=qa_evals, annotation_name='QA Correctness', annotator_kind='LLM')
+    for evals_df, name in [(hallucination_evals, 'Hallucination'), (qa_evals, 'QA Correctness')]:
+        try:
+            client.spans.log_span_annotations_dataframe(dataframe=to_annotation_dataframe(evals_df, score_names=[name]))
+        except Exception as e:
+            print(f'Warning: could not log {name} annotations to Phoenix: {e}')
 
     print(f'Evaluated {len(spans_df)} spans. Results logged to Phoenix at {phoenix_base_url}')
 
